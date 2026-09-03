@@ -7,7 +7,7 @@
   "author": "fatwang2",
   "repository": {
     "type": "git",
-    "url": "https://github.com/fatwang2/search2ai"
+    "url": "git+https://github.com/fatwang2/search2ai.git"
   },
   "homepage": "https://github.com/fatwang2/search2ai",
   "keywords": [
@@ -30,7 +30,7 @@
     "node": ">=22.18"
   },
   "bin": {
-    "search2ai": "./dist/cli.js"
+    "search2ai": "dist/cli.js"
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
