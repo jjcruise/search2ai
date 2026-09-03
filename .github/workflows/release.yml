@@ -1,0 +1,50 @@
+# 打 tag 即发版: git tag v0.3.1 && git push origin v0.3.1
+# 需要在仓库 Settings → Secrets 配置 NPM_TOKEN(npm Granular Access Token, 勾选 publish 权限)。
+# 若已在 npmjs.com 为本包开启 Trusted Publishing(OIDC), 可删掉 NODE_AUTH_TOKEN 那行, 仅靠 id-token 权限发布。
+name: Release
+
+on:
+  push:
+    tags: ['v*', 'V*']
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          registry-url: https://registry.npmjs.org
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - name: Check tag matches package.json version
+        run: |
+          TAG="${GITHUB_REF_NAME#[vV]}"
+          PKG="$(node -p "require('./package.json').version")"
+          if [ "$TAG" != "$PKG" ]; then echo "tag $TAG != package.json $PKG" && exit 1; fi
+      - name: Publish to npm (skipped if this version is already published)
+        run: |
+          PKG="$(node -p "require('./package.json').version")"
+          if npm view "search2ai@$PKG" version >/dev/null 2>&1; then
+            echo "search2ai@$PKG already on npm, skipping publish"
+          else
+            npm publish --provenance --access public
+          fi
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Create GitHub Release (skipped if it already exists)
+        run: |
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            echo "release $GITHUB_REF_NAME already exists, skipping"
+          else
+            gh release create "$GITHUB_REF_NAME" --title "$GITHUB_REF_NAME" --generate-notes
+          fi
+        env:
+          GH_TOKEN: ${{ github.token }}

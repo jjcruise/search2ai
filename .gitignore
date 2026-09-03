@@ -1,7 +1,8 @@
-node_modules
-.vercel
+node_modules/
+dist/
 .env
-wrangler.toml
-.wrangler
-.vscode
 .env.local
+.wrangler/
+.vercel/
+.vscode/
+.DS_Store

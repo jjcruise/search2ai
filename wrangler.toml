@@ -1,0 +1,16 @@
+# Cloudflare Workers 部署配置。密钥一律用 `wrangler secret put` 或后台 Variables 注入, 不要写在此文件。
+name = "search2ai"
+main = "src/worker.ts"
+compatibility_date = "2026-08-01"
+compatibility_flags = ["nodejs_compat"]
+
+# 可选: 结果缓存(配合 CACHE_TTL 使用)
+# [[kv_namespaces]]
+# binding = "CACHE"
+# id = "<your-kv-namespace-id>"
+
+# 非密钥变量示例(密钥请用 secret):
+# [vars]
+# SEARCH_SERVICE = "search1api,tavily"
+# MAX_RESULTS = "10"
+# APIBASE = "https://api.openai.com/v1"   # 配置后额外挂载兼容旧版的 /v1/chat/completions 代理

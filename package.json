@@ -1,16 +1,81 @@
 {
   "name": "search2ai",
-  "version": "0.2.8",
-  "description": "联网大模型",
-  "main": "src/entry/node-server.js",
-  "scripts": {
-    "start": "node src/entry/node-server.js",
-    "dev": "node src/entry/node-server.js",
-    "test": "node scripts/test-local.js"
-  },
-  "author": "fatwang2",
+  "version": "0.3.0",
+  "description": "Self-hosted search gateway for AI agents: one Perplexity-compatible API over Search1API, Serper, Tavily, Brave, Exa, SearXNG and more, with provider fallback. Use it as a library, an HTTP service, or an MCP server.",
+  "type": "module",
   "license": "MIT",
+  "author": "fatwang2",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fatwang2/search2ai"
+  },
+  "homepage": "https://github.com/fatwang2/search2ai",
+  "keywords": [
+    "search",
+    "gateway",
+    "ai",
+    "agent",
+    "mcp",
+    "perplexity",
+    "tavily",
+    "serper",
+    "brave",
+    "exa",
+    "searxng",
+    "search1api",
+    "hono",
+    "cloudflare-workers"
+  ],
+  "engines": {
+    "node": ">=22.18"
+  },
+  "bin": {
+    "search2ai": "./dist/cli.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./core": {
+      "types": "./dist/core/index.d.ts",
+      "import": "./dist/core/index.js"
+    },
+    "./hono": {
+      "types": "./dist/hono.d.ts",
+      "import": "./dist/hono.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "README-EN.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "dev": "node --watch src/cli.ts serve",
+    "start": "node dist/cli.js serve",
+    "build": "rm -rf dist && tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:e2e": "node scripts/e2e.ts",
+    "deploy": "wrangler deploy",
+    "prepublishOnly": "npm run build"
+  },
   "dependencies": {
-    "dotenv": "^16.3.1"
+    "@hono/node-server": "^2.1.1",
+    "@hono/zod-validator": "^0.9.1",
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "hono": "^4.13.5",
+    "zod": "^4.5.4"
+  },
+  "devDependencies": {
+    "@types/node": "^22.18.0",
+    "typescript": "^5.9.0",
+    "vite": "^8.2.2",
+    "vitest": "^5.0.0",
+    "wrangler": "^4.128.0"
   }
 }
